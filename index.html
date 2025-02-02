@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Instagram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #2e015a, #6829b7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #472b71;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+        }
+
+        button {
+            background-color: #835bdb;
+            border: none;
+            padding: 15px 30px;
+            color: white;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #6e48c5;
+        }
+
+        .instructions {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #ffa500;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="openInstagram">Open Instagram</button>
+        <div class="instructions hidden" id="instructions">
+            <p>If Instagram didn't open:</p>
+            <p>1. Tap "Copy Link" below</p>
+            <p>2. Paste in Safari/Chrome</p>
+        </div>
+        <button onclick="copyLink()" class="hidden" id="copyButton">Copy Link</button>
+    </div>
+
+    <script>
+        const instagramAppLink = {
+            android: 'intent://instagram.com/_u/virgin_sony/#Intent;package=com.instagram.android;scheme=https;end',
+            ios: 'instagram://user?username=virgin_sony'
+        };
+        
+        const instagramWebLink = 'https://www.instagram.com/virgin_sony?igsh=OGQ5ZDc2ODk2ZA==';
+        let isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        let isTikTok = /TikTok|WebView/i.test(navigator.userAgent);
+
+        function openInstagram() {
+            try {
+                if(isIOS) {
+                    window.location = instagramAppLink.ios;
+                } else {
+                    window.location = instagramAppLink.android;
+                }
+            } catch(e) {
+                handleFallback();
+            }
+
+            setTimeout(() => {
+                if(!document.hidden) {
+                    handleFallback();
+                }
+            }, 1000);
+        }
+
+        function handleFallback() {
+            document.getElementById('instructions').classList.remove('hidden');
+            document.getElementById('copyButton').classList.remove('hidden');
+            
+            if(isIOS && !isTikTok) {
+                window.open(instagramWebLink, '_blank');
+            }
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(instagramWebLink).then(() => {
+                alert('Link copied! Now paste it in your browser');
+            });
+        }
+
+        document.getElementById('openInstagram').addEventListener('click', function(e) {
+            e.preventDefault();
+            openInstagram();
+        });
+
+        if(!isIOS && isTikTok) {
+            window.open(instagramAppLink.android);
+        }
+    </script>
+</body>
+</html>
